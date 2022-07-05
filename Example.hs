@@ -7,6 +7,7 @@ import Protolude hiding (GT)
 import Data.Field.Galois
 import Data.Curve.Weierstrass
 import Control.DeepSeq (force)
+import Unsafe
 
 data VerificationKey = VerificationKey {
     vkAlfa1 :: G1 BN254
@@ -109,7 +110,7 @@ input = [
   ]
 
 mkVkX :: [Fr] -> [G1 BN254] -> G1 BN254
-mkVkX input ic = foldr (\x y -> force $ add x y) (unsafeHead ic) (zipWith mul' (drop 1 ic) input)
+mkVkX input ic = foldr (\x y -> force $ add x y) (unsafeHead ic) (zipWith mul (drop 1 ic) input)
 
 mkVerifyProof :: VerificationKey -> [Fr] -> Proof -> Fq12
 mkVerifyProof VerificationKey{..} input Proof{..} =
@@ -134,7 +135,4 @@ main  = do
   putText "pairing:"
   let p = mkVerifyProof verificationKey input proof
   print p
-  -- print (p == mempty)
-
-unsafeHead :: [a] -> a
-unsafeHead (x:_) = x
+  print (p == mempty)
