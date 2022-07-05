@@ -2,10 +2,11 @@ module Main where
 
 import Data.Curve.Weierstrass (Point (A), mul')
 import Data.Group (pow)
-import Data.Pairing.BN254 (BN254, G1, G2, GT, pairing, Fr)
+import Data.Pairing.BN254 (BN254, G1, G2, GT, pairing, Fr, Fq12)
 import Protolude hiding (GT)
--- import Data.Field.Galois
+import Data.Field.Galois
 import Data.Curve.Weierstrass
+import Control.DeepSeq (force)
 
 data VerificationKey = VerificationKey {
     vkAlfa1 :: G1 BN254
@@ -108,20 +109,23 @@ input = [
   ]
 
 mkVkX :: [Fr] -> [G1 BN254] -> G1 BN254
-mkVkX input ic = fold $ zipWith mul' ic $ 1 : input
+mkVkX input ic = foldr (\x y -> force $ add x y) (unsafeHead ic) (zipWith mul' (drop 1 ic) input)
 
-mkVerifyProof :: VerificationKey -> [Fr] -> Proof -> GT BN254
+mkVerifyProof :: VerificationKey -> [Fr] -> Proof -> Fq12
 mkVerifyProof VerificationKey{..} input Proof{..} =
-        pairing (inv proofA) proofB <>
-        pairing vkAlfa1 vkBeta2 <>
-        pairing vkX vkGamma2 <>
-        pairing proofC vkDelta2
+        (force . fromU) (pairing (inv proofA) proofB) *
+        (force . fromU) (pairing vkAlfa1 vkBeta2) *
+        (force . fromU) (pairing vkX vkGamma2) *
+        (force . fromU) (pairing proofC vkDelta2)
   where
-    vkX = mkVkX input vkIC
+    vkX = force $ mkVkX input vkIC
 
 main :: IO ()
 main  = do
   putText "pairing:"
   let p = mkVerifyProof verificationKey input proof
   print p
-  print (p == mempty)
+  -- print (p == mempty)
+
+unsafeHead :: [a] -> a
+unsafeHead (x:_) = x
