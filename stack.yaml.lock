@@ -12,12 +12,16 @@ packages:
   original:
     hackage: elliptic-curve-0.3.0
 - completed:
-    hackage: galois-field-1.0.2@sha256:ecfdd72259a3db7dc89ddeaa5c5dd7d7bcc305c0450a89c757d93fe2ddb71c77,4685
+    name: galois-field
+    version: 1.0.3
+    git: https://github.com/adjoint-io/galois-field.git
     pantry-tree:
-      size: 1451
-      sha256: 4b3eecd9ca434ee37785a1f3c4312c76760d9b79de05048fa17b0878c30f503c
+      size: 4634
+      sha256: dc4d4ee8c6fe82a0fa69828385e0c19090eb948b1317a32416cb4740c5194a56
+    commit: ad82cd2d626ad54a2c3c6cd1c62c31ab4e5ab2c1
   original:
-    hackage: galois-field-1.0.2
+    git: https://github.com/adjoint-io/galois-field.git
+    commit: ad82cd2d626ad54a2c3c6cd1c62c31ab4e5ab2c1
 - completed:
     hackage: poly-0.4.0.0@sha256:75c243113712745dab5d2f4a52643705e146473770af212f9e0ce3d87a83f2ed,2123
     pantry-tree:
