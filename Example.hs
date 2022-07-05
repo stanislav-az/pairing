@@ -2,7 +2,7 @@ module Main where
 
 import Data.Curve.Weierstrass (Point (A), mul')
 import Data.Group (pow)
-import Data.Pairing.BN254 (BN254, G1, G2, GT, pairing, Fr, Fq12)
+import Data.Pairing.BN254
 import Protolude hiding (GT)
 import Data.Field.Galois
 import Data.Curve.Weierstrass
@@ -122,6 +122,15 @@ mkVerifyProof VerificationKey{..} input Proof{..} =
 
 main :: IO ()
 main  = do
+  putText "isOnCurve sanity check:"
+  print (def $ proofA proof)
+  print (def $ proofB proof)
+  print (def $ proofC proof)
+  print (def $ vkAlfa1 verificationKey)
+  print (def $ vkBeta2 verificationKey)
+  print (def $ vkGamma2 verificationKey)
+  print (def $ vkDelta2 verificationKey)
+  print (all def $ vkIC verificationKey)
   putText "pairing:"
   let p = mkVerifyProof verificationKey input proof
   print p
